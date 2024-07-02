@@ -1,0 +1,133 @@
+version: '2'
+
+services:
+        # barcode-1:
+        #     extends:
+        #         file: barcode_dc/app.yml
+        #         service: app
+        #     networks:
+        #         internal:
+        #             aliases:
+        #                 - bs1.docker.local
+        #     logging:
+        #         driver: syslog
+        #         options:
+        #             tag: docker-barcode-1
+        #     restart: unless-stopped
+       
+        barcode-2:
+            extends:
+                file: barcode_dc/app.yml
+                service: app
+            networks:
+                internal:
+                    aliases:
+                        - bs2.docker.local
+            logging:
+                driver: syslog
+                options:
+                    tag: docker-barcode-2
+            restart: unless-stopped
+            volumes:
+                - ./barcode_dc/config/config_2.toml:/app/config.toml
+
+        barcode-3:
+            extends:
+                file: barcode_dc/app.yml
+                service: app
+            networks:
+                internal:
+                    aliases:
+                        - bs3.docker.local
+            logging:
+                driver: syslog
+                options:
+                    tag: docker-barcode-3
+            restart: unless-stopped
+            volumes:
+                - ./barcode_dc/config/config_3.toml:/app/config.toml
+
+        barcode-4:
+            extends:
+                file: barcode_dc/app.yml
+                service: app
+            networks:
+                internal:
+                    aliases:
+                        - bs4.docker.local
+            logging:
+                driver: syslog
+                options:
+                    tag: docker-barcode-4
+            restart: unless-stopped
+            volumes:
+                - ./barcode_dc/config/config_4.toml:/app/config.toml
+
+        dashboard-ui:
+            extends:
+                file: dashboard_ui/app.yml
+                service: app
+            networks:
+                        internal:
+                                aliases:
+                                        - dashboard-ui.docker.local
+            logging:
+                    driver: syslog
+                    options:
+                            tag: docker-dashboard-ui
+            restart: unless-stopped
+            env_file:
+                - django_secret_key
+ 
+        job-db:
+            extends:
+                file: locations_sds/app.yml
+                service: app
+            networks:
+                internal:
+                    aliases:
+                        - job-db.docker.local
+            logging:
+                    driver: syslog
+                    options:
+                            tag: docker-job-db
+            restart: unless-stopped
+            env_file:
+                - django_secret_key
+ 
+        user-input:
+            extends:
+                file: user_input_dc/app.yml
+                service: app
+            networks:
+                internal:
+                    aliases:
+                        - user-input.docker.local
+            logging:
+                    driver: syslog
+                    options:
+                            tag: docker-user-input
+            restart: unless-stopped
+            env_file:
+                - django_secret_key
+        mqtt-broker:
+            extends:
+                file: mqtt_broker/app.yml
+                service: app
+            ports:
+                - "8883:8883"
+            networks:
+                internal:
+                    aliases:
+                        - mqtt.docker.local
+            logging:
+                    driver: syslog
+                    options:
+                            tag: docker-mqtt-track
+            restart: unless-stopped
+
+
+networks:
+        internal:
+            name: 3DPrinting
+            external: true

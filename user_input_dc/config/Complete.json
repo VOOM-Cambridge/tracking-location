@@ -1,0 +1,9 @@
+{
+  "variable":[
+    {
+      "name": "location",
+      "type": "static",
+      "value": "Complete"
+    }
+  ]
+}

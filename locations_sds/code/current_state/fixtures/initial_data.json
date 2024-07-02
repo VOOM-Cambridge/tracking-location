@@ -1,0 +1,4 @@
+[
+ {"model": "current_state.location", "pk": 1, "fields": {"name": "New", "order": 1}}, 
+ {"model": "current_state.location", "pk": 2, "fields": {"name": "Complete", "order": 2}}
+]

@@ -1,0 +1,30 @@
+.bottombar {
+	position:fixed;
+	bottom:0;
+	left:0;
+	right:0;
+	height: 20px;
+	width:100%;
+    padding-left: 1px;
+    padding-right: 1px;
+    padding-top: 1px;
+    padding-bottom: 1px;
+    overflow: hidden;
+	background-color:#3399ff;
+}
+
+#live_status_box {
+	float:right;
+}
+
+#live_status.connected{
+	background:green;
+}
+
+#live_status.disconnected{
+	background:red;
+}
+
+#live_status_box p {
+	display:inline;
+}

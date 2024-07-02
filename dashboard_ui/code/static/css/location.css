@@ -1,0 +1,58 @@
+table{
+	border-collapse: collapse;
+	table-layout: fixed;
+}
+
+table, th {
+	border: 1px solid black;
+	padding: 5px;
+}
+
+td {
+	padding: 10px;
+}
+
+td.id {
+	border-left: 1px solid black;
+	color: darkblue;
+}
+
+td.time {
+	text-align: right;
+	font-family: monospace;
+	color: darkmagenta;
+}
+
+#search_bar {/*EDITED: Jan*/
+  background-image: url('/static/assets/search_bar_icon.png');
+  background-position: 8px 10px;
+  background-repeat: no-repeat;
+  image-rendering: optimizeSpeed; 
+  image-rendering: -moz-crisp-edges; /* Firefox */
+  image-rendering: -o-crisp-edges; /* Opera */
+  image-rendering: -webkit-optimize-contrast; /* Webkit (non-standard naming) */
+  image-rendering: crisp-edges;
+  image-rendering: -webkit-optimize-contrast; /* Chrome (and Safari) */
+  -ms-interpolation-mode: nearest-neighbor; /* IE (non-standard property) */
+  width: 25%;
+  font-size: 16px;
+  padding: 12px 20px 12px 40px;
+  border: 1px solid #ddd;
+  margin-bottom: 15px;
+}
+
+.button_export_to_csv {/*EDITED: Jan*/
+  background-color: #4CAF50;
+  color: white;
+  padding: 12px 12px 12px 12px;/*14px 20px;*/
+  border: none;
+  cursor: pointer;
+  width: 120px;
+  font-size: 20px;
+  float: right;
+}
+
+.button_export_to_csv:hover {/*EDITED: Jan*/
+  opacity: 0.8;
+}
+

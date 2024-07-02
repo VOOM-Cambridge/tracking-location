@@ -1,0 +1,181 @@
+{% extends 'live_footer_base.html' %}
+
+{% block css %}
+	{{ block.super }}
+	<link rel="stylesheet" href="{{STATIC_PREFIX}}css/location.css">
+{% endblock %}
+
+{% block content %}
+<h1>Jobs</h1>
+
+<input type="text" id="search_bar" onkeyup="doRenderTable()" placeholder="Search for jobs...">
+<button type="submit" id="export" class="button_export_to_csv" onclick="export_to_csv()">Export</button>
+
+<table id="jobs">
+</table>
+{% endblock %}
+
+{% block script %}
+	{{ block.super }}
+
+	<script type="text/javascript" src="{{STATIC_PREFIX}}scripts/table_utils.js"></script>
+	<script>
+		{{id_link_template|safe}}
+		function renderTable(table,fields,contents){	
+			table.innerHTML = "";
+			
+			console.log(contents);
+
+			let thead = table.createTHead();
+			let headrow = thead.insertRow();
+			for (const field of fields.shown){
+				let th = document.createElement("th");
+				let text = document.createTextNode(fields.names[field]);
+				th.appendChild(text);
+				headrow.appendChild(th);
+			}
+
+			let i = 0;
+			var now = new Date();
+			
+			for (const entry of contents){
+				let row = table.insertRow();
+				
+				for(let field of fields.shown){//insert cells for each state
+					var cell=row.insertCell();
+					cell.classList.add(field);
+					
+					if(field=="id"){//id cell
+						let idtext = ''
+						if({{id_as_link}}){
+							idtext = document.createElement('a');
+							idtext.appendChild(document.createTextNode(entry.id))
+							idtext.href = get_link_href(entry.id,entry.location)
+						} else {
+							idtext = document.createTextNode(entry.id);
+						}
+						cell.appendChild(idtext);
+						continue;
+					}
+
+					if(field=="location"){
+						let text = document.createTextNode(entry[field]);
+						cell.appendChild(text);
+						continue;
+					}
+
+					if(field=="time"){//time cell
+						let timetext = ''
+						if ({{show_duration}}){
+							timetext = document.createTextNode(timeDifferenceString(entry.timestamp,now));
+						} else {
+							timetext = document.createTextNode(entry.timestamp.toLocaleString());
+						}
+						cell.appendChild(timetext);
+						continue;
+					}
+					
+					if(field=="user1" || field=="user2" || field=="user3"){//user cells
+						var content=null
+						cell.classList.add('custom_entry');
+						if (entry[field]=="" || entry[field]==undefined){
+							cell.classList.add('no_entry');
+							content = document.createTextNode('Add');
+							cell.onclick = function() {
+								display_modal(entry.id,field,fields.names[field],"");
+							};
+						}else{
+							content = document.createTextNode(entry[field]);
+							cell.onclick = function() {
+								display_modal(entry.id,field,fields.names[field],entry[field]);
+							};
+						}
+						cell.appendChild(content);
+					}
+				}
+			}
+		}
+
+		function search_filter(entry){
+			const input=document.getElementById("search_bar");
+			return entry.id.indexOf(input.value.trim())!==-1;
+		}
+	
+		function export_to_csv(){
+			//export table to *.csv
+			var csv,locations,rows,cells,text,filename,link;
+			
+			//convert to *.csv format
+			csv="";
+			locations=document.getElementById('jobs');
+			rows=locations.rows;
+			for(var i=1;i<rows.length;i++){//for each table row (after the headings)
+				cells=locations.rows[i].cells;
+				for(var j=0;j<cells.length;j++){//for each cell
+					text=cells[j].textContent;
+					text=text.replaceAll('\xA0','');//remove non breaking space to prevent encoding errors
+					csv+=text+';';//delimiter may differ depending on the OS settings
+				}
+				csv+='\r\n';
+			}
+			csv='data:text/csv;charset=utf-8,'+csv;
+			
+			//download *.csv
+			filename='locations.csv';
+			link=document.createElement('a');
+			link.setAttribute('href',csv);
+			link.setAttribute('download',filename);
+			link.click();
+		}
+
+
+
+	</script>
+	<script>
+		var fields = {
+			'shown':[{% for field in fields.shown %}'{{field}}'{% if not forloop.last %},{% endif %}{% endfor %}],
+			'names':{
+				{% for key, value in fields.names.items %}'{{key}}':'{{value}}',{% endfor %}
+			}
+		}
+		var jobstate = [
+			{% for job in jobstate %}
+				{
+					"id":'{{job.id}}',
+					"location":'{{job.location}}',
+					"timestamp": new Date('{{job.timestamp}}'),
+					"user1":'{{job.user1}}',
+					"user2":'{{job.user2}}',
+					"user3":'{{job.user3}}'
+				}
+				{% if not forloop.last %},{% endif %}
+        	{% endfor %}
+    	];
+		console.log(jobstate);
+		function doRenderTable() {
+			var shown_jobstate = jobstate.filter(search_filter)
+			renderTable(document.getElementById("jobs"),fields,sortByTime(shown_jobstate,'{{sort}}'))
+		}
+		doRenderTable();
+		var tableRenderer = setInterval(doRenderTable,60000);
+		
+		function updateState(msg){
+			msg.timestamp = new Date(msg.timestamp)
+			const index = jobstate.findIndex(el => el.id === msg.id);
+			if (index === -1){
+				jobstate.push(msg);
+			} else {
+				for (key in jobstate[index]){
+					if (msg[key])
+						jobstate[index][key]= msg[key];
+				}
+			}
+			console.log(jobstate);
+			doRenderTable();
+		}
+
+		wsc.connect("ws://"+window.location.host+"/ws/stateupdates");
+		wsc.register_callback("state-update",updateState);
+		create_modal();
+	</script>
+{% endblock %}

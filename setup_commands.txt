@@ -1,0 +1,62 @@
+# Commands to Install Software:
+sudo apt-get update
+
+# download files
+
+git clone git@github.com:DigitalShoestringSolutions/JobTrackingStarterSolution.git ~/JobTrackingStarterSolution 
+
+# Install Docker
+sudo apt-get install curl -y
+curl -sSL https://get.docker.com | sh
+
+sudo usermod -a -G docker $USER
+sudo systemctl start docker
+sudo systemctl enable docker
+docker -v
+
+sudo apt-get install docker-compose-plugin
+docker compose version 
+
+# restart
+
+# navigate terminal to <solution files>/logging
+./setup_logging.sh
+
+# navigate terminal to <solution files>
+./setup_keys.sh
+
+docker compose build
+./start.sh
+
+docker compose run job-db bash
+python manage.py createsuperuser
+exit
+
+./stop.sh
+
+# Starting the solution
+./start.sh
+or
+Double click start.sh in the file explorer and select run in terminal
+
+# Stopping the solution
+./stop.sh
+or
+Double click stop.sh in the file explorer and select run in terminal
+
+# finding USB scanner serial
+lsusb
+
+# finding connection point
+ls /dev/input/by-path 
+
+# Website links:
+Job Tracking Dashboard -    http://localhost/
+Database Admin -            http://localhost:8001/admin/
+Manual Input -              http://localhost:8080
+
+# log files are found at:
+/var/log/containers/
+
+
+

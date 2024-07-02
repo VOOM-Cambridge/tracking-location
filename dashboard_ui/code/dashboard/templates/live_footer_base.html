@@ -1,0 +1,36 @@
+{% extends 'dashboard_base.html' %}
+
+{% block css %}
+	{{block.super}}
+	<link rel="stylesheet" href="{{STATIC_PREFIX}}css/live_status.css">
+{% endblock %}
+
+{% block footer %}
+	<div class="bottombar">
+		<div id="live_status_box">
+			<p id='live_label'><b>Live Update:</b></p> 
+			<p id='live_status' class='disconnected'>Disconnected</p>
+		</div>
+	</div>
+{% endblock %}
+
+{% block script %}
+	{{block.super}}
+	<script>
+		function status_connect(){
+			var status = document.getElementById("live_status");
+			status.innerHTML = "Connected";
+			status.className = "connected";
+		}
+		
+		function status_disconnect(){
+			var status = document.getElementById("live_status");
+			status.innerHTML = "Disconnected";
+			status.className = "disconnected";
+		}
+
+		wsc.register_connect_callback(status_connect);
+		wsc.register_disconnect_callback(status_disconnect);
+	</script>
+
+{% endblock %}

@@ -1,0 +1,14 @@
+version: '2'
+
+services:
+        app:
+            build: .
+            privileged: true
+            working_dir: /app
+            command: "python main.py"
+            devices:
+                - /dev/input:/dev/input:ro
+            volumes:
+                - ./config/config_1.toml:/app/config.toml
+                - /etc/localtime:/etc/localtime:ro
+                - /run/udev:/run/udev:ro

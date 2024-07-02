@@ -1,0 +1,9 @@
+version: '2'
+
+services:
+        app:
+                image: eclipse-mosquitto
+                volumes:
+                        - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
+                        - ./data:/mosquitto/data
+                        - ./log:/mosquitto/log

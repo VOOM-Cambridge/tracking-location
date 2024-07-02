@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	{% load static %}
+	{% get_static_prefix as STATIC_PREFIX %}
+	<title>Shoestring Job Tracker</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	{% block css %} {% endblock css %}
+	<link rel="stylesheet" href="{{STATIC_PREFIX}}css/base.css">
+
+</head>
+<body>
+<!-- Navbar -->
+	<div class="topnav">
+	    <img class="logo" src="{{STATIC_PREFIX}}assets/Logo.jpeg" alt="Logo">
+		{% block navbar %} {% endblock navbar %}
+	</div>
+	
+	{% block content %} {% endblock content %}
+
+	{% block footer %} {% endblock footer %}
+<!-- Header -->
+	<header class="header">
+ 
+	</header>
+	<script type="text/javascript" src="{{STATIC_PREFIX}}scripts/wslib.js"> </script>
+	<script>
+		var wsc = new wsClient();
+	</script>
+	{% block script %} {% endblock script %}
+</body>
+</html>
